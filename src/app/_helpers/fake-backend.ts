@@ -7,8 +7,10 @@ import { delay, mergeMap, materialize, dematerialize } from 'rxjs/operators';
 let users = JSON.parse(localStorage.getItem('users')) || [];
 
 @Injectable()
-export class FakeBackendInterceptor implements HttpInterceptor {
-    intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+export class FakeBackendInterceptor implements HttpInterceptor
+{
+    intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>>
+    {
         const { url, method, headers, body } = request;
 
         // wrap in delayed observable to simulate server api call
@@ -18,7 +20,8 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             .pipe(delay(500))
             .pipe(dematerialize());
 
-        function handleRoute() {
+        function handleRoute()
+        {
             switch (true) {
                 case url.endsWith('/users/authenticate') && method === 'POST':
                     return authenticate();
@@ -31,12 +34,13 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                 default:
                     // pass through any requests not handled above
                     return next.handle(request);
-            }    
+            }
         }
 
         // route functions
 
-        function authenticate() {
+        function authenticate()
+        {
             const { username, password } = body;
             const user = users.find(x => x.username === username && x.password === password);
             if (!user) return error('Username or password is incorrect');
@@ -49,7 +53,8 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             })
         }
 
-        function register() {
+        function register()
+        {
             const user = body
 
             if (users.find(x => x.username === user.username)) {
@@ -63,12 +68,14 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             return ok();
         }
 
-        function getUsers() {
+        function getUsers()
+        {
             if (!isLoggedIn()) return unauthorized();
             return ok(users);
         }
 
-        function deleteUser() {
+        function deleteUser()
+        {
             if (!isLoggedIn()) return unauthorized();
 
             users = users.filter(x => x.id !== idFromUrl());
@@ -78,23 +85,28 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
         // helper functions
 
-        function ok(body?) {
+        function ok(body?)
+        {
             return of(new HttpResponse({ status: 200, body }))
         }
 
-        function error(message) {
+        function error(message)
+        {
             return throwError({ error: { message } });
         }
 
-        function unauthorized() {
+        function unauthorized()
+        {
             return throwError({ status: 401, error: { message: 'Unauthorised' } });
         }
 
-        function isLoggedIn() {
+        function isLoggedIn()
+        {
             return headers.get('Authorization') === 'Bearer fake-jwt-token';
         }
 
-        function idFromUrl() {
+        function idFromUrl()
+        {
             const urlParts = url.split('/');
             return parseInt(urlParts[urlParts.length - 1]);
         }
