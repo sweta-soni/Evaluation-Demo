@@ -37,7 +37,7 @@ module.exports = {
         new webpack.DefinePlugin({
             // global app config object
             config: JSON.stringify({
-                apiUrl: 'https://demo-api-deploy-ui-engineer.byteridge.com'
+                apiUrl: 'https://demo-api-master.byteridge.com'
                 //apiUrl: 'http://localhost:4000'
             })
         }),
