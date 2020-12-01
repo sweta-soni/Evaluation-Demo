@@ -1,13 +1,53 @@
 <h1>Hi {{currentUser.firstName}}!</h1>
 <p>You're logged in with Angular 8!!</p>
 <h3>All login audit :</h3>
-<ul>
-    <li *ngFor="let audit of audits">
-        <br/><span class="badge badge-primary">{{audit.user}}</span>
-        <br/><span class="badge badge-secondary">{{audit._id}}</span>
-        <br/>Login - {{audit.loginTime}}
-        <br/>Logout - {{audit.logoutTime}}
-        <br/>IP - {{audit.ip}}
-    </li>
+<form [formGroup]="formGroup">
+  <input
+    type="text"
+    class="form-control"
+    name="searchString"
+    placeholder="Type to search..."
+    formControlName="filter"
+  />
 
-</ul>
+  Start at:
+  <select 
+    formControlName="startDate"
+    (change)="onSelect($event.target.value, 'startDate')" 
+    id="skill">
+    <option value="0" selected>Select</option>
+    <option [value]="type" *ngFor="let type of startTimeArray; let i = index">
+      {{type}}
+    </option>
+  </select>
+
+  End at:
+  <select 
+    formControlName="endDate"
+    (change)="onSelect($event.target.value, 'endDate')">
+    <option value="0" selected>Select</option>
+    <option [value]="type" *ngFor="let type of endTimeArray">
+      {{type}}
+    </option>
+  </select>
+</form>
+<table class="table table-triped border">
+<tr>
+   <th>User</th>
+   <th >ID</th>
+   <th >Login Time</th>
+   <th >Logout Time</th>
+   <th >IP</th>
+ 
+  </tr>
+  <tr *ngFor = "let audit of audits | paginate: { itemsPerPage: 10, currentPage: p, totalItems: total }
+  let i = index">
+
+      <td>{{audit.user}}</td
+      <td>{{audit._id}}</td>
+      <td>{{audit.loginTime | date:'dd-MM-yyyy'}}</td>
+      <td>{{audit.logoutTime | date:'dd-MM-yyyy'}}</td>
+      <td>{{audit.ip}}</td>
+  </tr>
+</table>
+<pagination-controls (pageChange)="p = $event"></pagination-controls>

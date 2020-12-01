@@ -21,9 +21,9 @@ export class LoginComponent implements OnInit {
     ) {
         // redirect to home if already logged in
         if (this.authenticationService.currentUserValue) {
-            this.router.navigate(['/']);
+                this.router.navigate(['/']); 
+            }
         }
-    }
 
     ngOnInit() {
         this.loginForm = this.formBuilder.group({
@@ -54,7 +54,11 @@ export class LoginComponent implements OnInit {
             .pipe(first())
             .subscribe(
                 data => {
+                    if(data.role =="Auditor"){
+                        this.router.navigate(['/audit']);
+                    }else{
                     this.router.navigate([this.returnUrl]);
+                    }
                 },
                 error => {
                     this.alertService.error(error);
